@@ -1,0 +1,44 @@
+{
+  "name": "ext-celerate",
+  "description": "ext-celerate is a package designed to make developing with Ext JS easier with Hot Reload and Live Reload support!",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "bin": {
+    "celerate": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "ext-celerate",
+    "celerate",
+    "reload",
+    "ext hot reload",
+    "ext-hot-reload",
+    "ext reload"
+  ],
+  "author": "Antony Luiz Cechinel",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "dependencies": {
+    "@types/chalk": "^2.2.0",
+    "boxen": "^4.2.0",
+    "chalk": "^4.1.2",
+    "chokidar": "^4.0.0",
+    "express": "^4.21.0",
+    "portfinder": "^1.0.32",
+    "ws": "^8.18.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/ws": "^8.5.12",
+    "@types/yargs": "^17.0.33",
+    "typescript": "^5.6.2"
+  }
+}

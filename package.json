@@ -1,0 +1,29 @@
+{
+  "name": "ext-celerate",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/cli.ts",
+    "build": "tsup",
+    "start": "node dist/cli.js",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/static": "^9.0.0",
+    "@parcel/watcher": "^2.5.4",
+    "fastify": "^5.7.1",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "@types/ws": "^8.18.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

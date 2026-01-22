@@ -1,6 +1,9 @@
 import { FastifyInstance } from "fastify";
 import { staticPlugin } from "./static";
+import fp from 'fastify-plugin'
 
-export const apiPlugins = async (app: FastifyInstance) => {
+const plugins = async (app: FastifyInstance) => {
     await app.register(staticPlugin);
 };
+
+export const apiPlugins = fp(plugins);

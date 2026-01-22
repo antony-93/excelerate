@@ -1,8 +1,11 @@
 import fastify, { FastifyInstance } from "fastify";
 import { apiPlugins } from "./plugins";
+import { apiMiddlewares } from "./middlewares";
+import { Injection } from "../../domain/strategies/reload/injection";
 
 type ServerConfig = {
-    logger: boolean
+    logger: boolean;
+    injection: Injection;
 };
 
 const server = fastify({ logger: false });
@@ -14,7 +17,11 @@ class AppServer {
         return this.app.listen({ host, port });
     };
 
-    config = async ({ logger }: ServerConfig) => {
+    config = async ({ injection, logger }: ServerConfig) => {
+        await this.app.register(app => {
+            apiMiddlewares({ app, injection, logger });
+        });
+
         await this.app.register(apiPlugins);
     };
 

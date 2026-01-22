@@ -17,6 +17,7 @@
     "@fastify/static": "^9.0.0",
     "@parcel/watcher": "^2.5.4",
     "fastify": "^5.7.1",
+    "picomatch": "^4.0.3",
     "ws": "^8.19.0"
   },
   "devDependencies": {

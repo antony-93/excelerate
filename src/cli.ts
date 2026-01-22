@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
 import app from './infra/http';
+import { HotReloadInjection, LiveReloadInjection } from './domain/strategies/reload';
 
 const options = {
     port: { type: 'string', short: 'p', default: '3000' },
@@ -16,14 +17,12 @@ const execute = async () => {
 
         const config = {
             logger: values.log,
-            live: values.live
+            injection: values.live ? new LiveReloadInjection() : new HotReloadInjection()
         }
 
         await app.config(config);
         
         await app.start('0.0.0.0', Number(values.port));
-
-        
     } catch (err: any) {
         console.error(err.message);
         process.exit(1);

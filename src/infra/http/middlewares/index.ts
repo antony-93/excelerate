@@ -9,5 +9,5 @@ type ApiMiddlewaresProps = {
 }
 
 export const apiMiddlewares = ({ app, injection, logger }: ApiMiddlewaresProps) => {
-    app.addHook('onSend', createHtmlInjectionHook(injection))
+    app.addHook('onSend', createHtmlInjectionHook(injection));
 };

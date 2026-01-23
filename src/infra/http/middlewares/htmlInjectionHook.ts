@@ -6,17 +6,11 @@ export const createHtmlInjectionHook = (injectionScript: Injection): onSendHookH
         const contentType = String(reply.getHeader('content-type'));
     
         if (!contentType.includes('text-html') || !payload) {
-            return payload
-        }
-        
-        const content = payload.toString();
-    
-        if (content.includes('</body>')) {
             return payload;
         }
-    
-        const scriptToInject = `<script src="${injectionScript.getScript()}"/>`
+        
+        const scriptToInject = injectionScript.getScript();
 
-        return content.replace('</body>', `${scriptToInject}</body>`);
+        return payload.toString().replace('</body>', `${scriptToInject}</body>`);
     }
 };

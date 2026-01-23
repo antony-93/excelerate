@@ -2,6 +2,6 @@ import { IInjection } from "./injection";
 
 export class LiveReloadInjection implements IInjection {
     getScript(): string {
-        return '__excelarate_live'
+        return `<script src="__excelarate_live" />`
     }
 }

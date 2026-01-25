@@ -7,13 +7,33 @@
         "noImplicitAny": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "forceConsistentCasingInFileNames": true,
         "outDir": "./dist",
         "declaration": true,
         "sourceMap": true,
         "removeComments": true,
         "incremental": true,
-        "tsBuildInfoFile": "./.tsbuildinfo"
+        "tsBuildInfoFile": "./.tsbuildinfo",
+        "baseUrl": ".",
+        "paths": {
+            "@domain/*": [
+                "src/domain/*"
+            ],
+            "@application/*": [
+                "src/application/*"
+            ],
+            "@infra/*": [
+                "src/infra/*"
+            ],
+            "@presentation/*": [
+                "src/presentation/*"
+            ],
+            "@shared/*": [
+                "src/shared/*"
+            ]
+        },
     },
     "include": [
         "src/**/*"

@@ -1,34 +1,32 @@
 import fastify, { FastifyInstance } from "fastify";
-import { apiPlugins } from "./plugins";
+import { IHttpServer, THttpServerConfig } from "@domain/communication/interfaces/httpServer";
 import { apiMiddlewares } from "./middlewares";
-import { Injection } from "../../domain/strategies/reload/injection";
+import { apiPlugins } from "./plugins";
 
-type ServerConfig = {
-    logger: boolean;
-    injection: Injection;
-};
+export class FastifyServer implements IHttpServer {
+    private readonly app: FastifyInstance;
 
-const server = fastify({ logger: false });
+    constructor() {
+        this.app = fastify({ logger: false })
+    }
 
-class AppServer {
-    constructor(private app: FastifyInstance) { }
-
-    start = (host: string, port: number) => {
-        return this.app.listen({ host, port });
+    async start (host: string, port: number) {
+        await this.app.listen({ host, port });
     };
 
-    config = async ({ injection, logger }: ServerConfig) => {
+    async config({ injection }: THttpServerConfig) {
         await this.app.register(app => {
-            apiMiddlewares({ app, injection, logger });
+            apiMiddlewares({ app, injection });
         });
 
         await this.app.register(apiPlugins);
     };
 
-    close = () => {
-        this.app.close();
+    close() {
+        return this.app.close();
     };
-}
 
-const app = new AppServer(server);
-export default app;
+    getServer() {
+        return this.app.server;
+    }
+}

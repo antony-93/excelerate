@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest, onSendHookHandler } from "fastify";
-import { Injection } from "../../../domain/strategies/reload/injection";
+import { IInjection } from "@domain/reload/interfaces/injection";
 
-export const createHtmlInjectionHook = (injectionScript: Injection): onSendHookHandler => {
+export const createHtmlInjectionHook = (injectionScript: IInjection): onSendHookHandler => {
     return async (_request: FastifyRequest, reply: FastifyReply, payload: unknown) => {
         const contentType = String(reply.getHeader('content-type'));
     

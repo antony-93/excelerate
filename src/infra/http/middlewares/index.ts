@@ -1,13 +1,12 @@
 import { FastifyInstance } from "fastify";
 import { createHtmlInjectionHook } from "./htmlInjectionHook";
-import { Injection } from "../../../domain/strategies/reload/injection";
+import { IInjection } from "@domain/reload/interfaces/injection";
 
-type ApiMiddlewaresProps = {
+type TApiMiddlewares = {
     app: FastifyInstance; 
-    injection: Injection; 
-    logger: boolean;
+    injection: IInjection
 }
 
-export const apiMiddlewares = ({ app, injection, logger }: ApiMiddlewaresProps) => {
+export const apiMiddlewares = ({ app, injection }: TApiMiddlewares) => {
     app.addHook('onSend', createHtmlInjectionHook(injection));
 };

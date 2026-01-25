@@ -1,32 +1,50 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
-import app from './infra/http';
-import { HotReloadInjection, LiveReloadInjection } from './domain/strategies/reload';
+import { ExcelerateApp } from './presentation';
+import { TCommandArgs } from '@domain/config/interfaces/commandArgs';
 
 const options = {
-    port: { type: 'string', short: 'p', default: '3000' },
-    log: { type: 'boolean', default: false },
+    port: { type: 'string', short: 'p' },
     live: { type: 'boolean', default: false }
 } as const;
 
-const execute = async () => {    
+const { values } = parseArgs({ options });
+
+const commandArgs: TCommandArgs = {
+    live: values.live,
+    port: values.port ? Number(values.port) : undefined
+}
+
+const app = new ExcelerateApp(commandArgs);
+
+async function bootstrap() {
     try {
-        const { values } = parseArgs({
-            options
-        });
+        await app.initialize();
+        console.log('🚀 EXCELERATE ONLINE')
+    } catch(error) {
+        console.error('❌ Erro durante a inicialização:', error);
+        shutdown(1);
+    }
+}
 
-        const config = {
-            logger: values.log,
-            injection: values.live ? new LiveReloadInjection() : new HotReloadInjection()
-        }
+async function shutdown(code: number = 0) {
+    try {
+        await app.close();
 
-        await app.config(config);
+        console.log('👋 Até logo!');
         
-        await app.start('0.0.0.0', Number(values.port));
-    } catch (err: any) {
-        console.error(err.message);
+        process.exit(code);
+    } catch (err) {
+        console.error('❌ Erro durante o desligamento:', err);
         process.exit(1);
     }
 }
 
-execute();
+process.on('SIGINT', () => shutdown());
+process.on('SIGTERM', () => shutdown());
+process.on('unhandledRejection', (reason) => {
+    console.error('❌ Erro assíncrono não tratado:', reason);
+    shutdown(1);
+});
+
+bootstrap();

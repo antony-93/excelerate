@@ -1,4 +1,4 @@
-import { IInjection } from "./injection";
+import { IInjection } from "../interfaces/injection";
 
 export class HotReloadInjection implements IInjection {
     getScript(): string {

@@ -1,0 +1,1 @@
+export const EXCELERATE_INTERNAL_PREFIX = '/__excelerate';

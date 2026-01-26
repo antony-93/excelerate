@@ -1,12 +1,14 @@
-import { FastifyInstance } from "fastify";
+import fp from 'fastify-plugin';
+import { FastifyPluginAsync } from "fastify";
 import { createHtmlInjectionHook } from "./htmlInjectionHook";
 import { IInjection } from "@domain/reload/interfaces/injection";
 
-type TApiMiddlewares = {
-    app: FastifyInstance; 
+type TApiMiddlewaresOption = { 
     injection: IInjection
 }
 
-export const apiMiddlewares = ({ app, injection }: TApiMiddlewares) => {
+const middlewares: FastifyPluginAsync<TApiMiddlewaresOption> = async (app, { injection }) => {
     app.addHook('onSend', createHtmlInjectionHook(injection));
 };
+
+export const apiMiddlewares = fp(middlewares);

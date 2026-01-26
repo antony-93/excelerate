@@ -7,19 +7,26 @@ export class FastifyServer implements IHttpServer {
     private readonly app: FastifyInstance;
 
     constructor() {
-        this.app = fastify({ logger: false })
+        this.app = fastify({ 
+            logger: false,
+            forceCloseConnections: true
+        });
     }
 
-    async start (host: string, port: number) {
-        await this.app.listen({ host, port });
+    start(host: string, port: number) {
+        return this.app.listen({ host, port });
     };
 
-    async config({ injection }: THttpServerConfig) {
-        await this.app.register(app => {
-            apiMiddlewares({ app, injection });
-        });
-
-        await this.app.register(apiPlugins);
+    async config({ injection, internalAssetsRoot, internalPrefix }: THttpServerConfig) {
+        await Promise.all([
+            this.app.register(apiMiddlewares, {
+                injection
+            }),
+            this.app.register(apiPlugins, {
+                internalAssetsRoot,
+                internalPrefix
+            })
+        ])
     };
 
     close() {

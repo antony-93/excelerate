@@ -11,15 +11,19 @@ export class WSServer implements ISocketServer {
 
     broadcast(message: Record<string, any>): void {
         if (!this.wss) return;
-        
+
         const data = JSON.stringify(message);
-        
+
         this.wss.clients.forEach(client => {
             if (client.readyState === WebSocket.OPEN) client.send(data);
         });
     }
 
     close() {
-        this.wss?.close();
+        if (!this.wss) return
+
+        this.wss.clients.forEach(c => c.terminate())
+
+        this.wss.close();
     }
 }

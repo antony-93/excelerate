@@ -3,10 +3,10 @@ import { EVENTS } from "@domain/events/constants/events";
 import { Subscriber } from "@shared/decorators/Subscriber";
 
 export class ReloadController {
-    constructor(private socketServer: ISocketServer) {}
+    constructor(private readonly socketServer: ISocketServer) {}
 
     @Subscriber(EVENTS.FILE_CHANGED)
     async onFileChange() {
-        console.log('PUTA MERDA QUE CÓDIGO GOSTOSO');
+        console.log('ARQUIVO MODIFICADO');
     }
 }

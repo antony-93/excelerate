@@ -13,6 +13,8 @@ import { Watcher } from '@infra/watcher';
 import { ReloadController } from './controllers/reloadController';
 import { HotReloadInjection, LiveReloadInjection } from '@domain/reload';
 import { IInjection } from '@domain/reload/interfaces/injection';
+import { EXCELERATE_INTERNAL_PREFIX } from '@domain/communication/const/server';
+import path from 'node:path';
 
 export class ExcelerateApp {
     private readonly httpServer: IHttpServer;
@@ -23,9 +25,9 @@ export class ExcelerateApp {
     private readonly workingDir: string;
 
     constructor(private readonly commandArgs: TCommandArgs) {
-        const eventBus = new EventBus(new EventEmitter()); 
+        const eventBus = new EventBus(new EventEmitter());
         const workingDir = process.cwd();
-        
+
         this.workingDir = workingDir;
         this.eventBus = eventBus;
         this.watcher = new Watcher(eventBus);
@@ -39,15 +41,21 @@ export class ExcelerateApp {
 
         const { server, watcher } = await this.excelerateConfig.getConfig();
 
-        await this.startWatcher(watcher);
-        await this.startHttpServer(server);
+        await Promise.all([
+            this.startWatcher(watcher),
+            this.startHttpServer(server)
+        ]);
+
         this.startSocketServer();
     }
 
-    async close() {
-        await this.watcher.stop();
-        await this.httpServer.close();
+    close() {
         this.socketServer.close();
+
+        return Promise.all([
+            this.httpServer.close(),
+            this.watcher.stop()
+        ])
     }
 
     private registerControllers() {
@@ -61,11 +69,17 @@ export class ExcelerateApp {
     }
 
     private async startHttpServer(serverConfig: TServerConfig) {
-        const injection: IInjection = this.commandArgs.live 
-            ? new LiveReloadInjection() 
+        const injection: IInjection = this.commandArgs.live
+            ? new LiveReloadInjection()
             : new HotReloadInjection();
 
-        await this.httpServer.config({ injection });
+        const root = path.join(__dirname, 'assets');
+
+        await this.httpServer.config({
+            injection,
+            internalAssetsRoot: root,
+            internalPrefix: EXCELERATE_INTERNAL_PREFIX
+        });
 
         const port = this.commandArgs.port || serverConfig.port || 3000;
 

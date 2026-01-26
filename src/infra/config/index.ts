@@ -12,7 +12,7 @@ export class ExcelarateConfig implements IExcelerateConfig {
         );
     }
 
-    public async getConfig() {
+    async getConfig() {
         const existsConfigFile = this.existsConfigFile(); 
         
         if (!existsConfigFile) return this.getDefaultConfig();

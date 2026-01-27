@@ -1,7 +1,7 @@
 export type TWatcherConfig = {
-    include: string[];
-    exclude: string[];
-    live: string[];
+    include?: string[];
+    exclude?: string[];
+    live?: string[];
 }
 
 export type TServerConfig = {

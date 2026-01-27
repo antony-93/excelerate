@@ -1,17 +1,16 @@
-import { EventEmitter } from 'node:events';
 import { IHttpServer } from '@domain/communication/interfaces/httpServer';
 import { ISocketServer } from '@domain/communication/interfaces/socketServer';
 import { TCommandArgs } from '@domain/config/interfaces/commandArgs';
-import { FastifyServer } from '@infra/http';
-import { WSServer } from '@infra/websocket';
+import { FastifyHttpServerAdapter } from '@infra/adapters/http';
+import { WSSocketServerAdapter } from '@infra/adapters/websocket';
 import { IEventBus } from '@domain/events/interfaces/eventBus';
-import { EventBus } from '@infra/events';
-import { ExcelarateConfig } from '@infra/config';
+import { NodeEventEmmiterAdapter } from '@infra/adapters/events';
+import { ExcelarateConfigAdapter } from '@infra/adapters/config';
 import { IExcelerateConfig, TServerConfig, TWatcherConfig } from '@domain/config/interfaces/excelerateConfig';
 import { IWatcher } from '@domain/watcher/interfaces/watcher';
-import { Watcher } from '@infra/watcher';
+import { ParcelWatcherDriver } from '@infra/driver/watcher';
 import { ReloadController } from './controllers/reloadController';
-import { HotReloadInjection, LiveReloadInjection } from '@domain/reload';
+import { HotReloadInjection, LiveReloadInjection } from '@domain/reload/injections';
 import { IInjection } from '@domain/reload/interfaces/injection';
 import { EXCELERATE_INTERNAL_PREFIX } from '@domain/communication/const/server';
 import path from 'node:path';
@@ -25,15 +24,15 @@ export class ExcelerateApp {
     private readonly workingDir: string;
 
     constructor(private readonly commandArgs: TCommandArgs) {
-        const eventBus = new EventBus(new EventEmitter());
+        const eventBus = new NodeEventEmmiterAdapter();
         const workingDir = process.cwd();
 
         this.workingDir = workingDir;
         this.eventBus = eventBus;
-        this.watcher = new Watcher(eventBus);
-        this.excelerateConfig = new ExcelarateConfig(workingDir);
-        this.httpServer = new FastifyServer();
-        this.socketServer = new WSServer();
+        this.watcher = new ParcelWatcherDriver(eventBus);
+        this.excelerateConfig = new ExcelarateConfigAdapter(workingDir);
+        this.httpServer = new FastifyHttpServerAdapter();
+        this.socketServer = new WSSocketServerAdapter();
     }
 
     async initialize() {
@@ -60,7 +59,7 @@ export class ExcelerateApp {
 
     private registerControllers() {
         const reloadController = new ReloadController(this.socketServer);
-        EventBus.registerSubscriber(reloadController, this.eventBus);
+        NodeEventEmmiterAdapter.registerSubscriber(reloadController, this.eventBus);
     }
 
     private startWatcher(watcherConfig: TWatcherConfig) {

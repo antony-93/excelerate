@@ -3,8 +3,8 @@ import { EventEmitter } from 'node:events';
 import { mapSubscribers } from './mapper/subscriberMapper';
 import { IEventBus, TEventNames } from '@domain/events/interfaces/eventBus';
 
-export class EventBus implements IEventBus {
-    constructor(private readonly eventEmitter: EventEmitter) {}
+export class NodeEventEmmiterAdapter implements IEventBus {
+    constructor(private readonly eventEmitter: EventEmitter = new EventEmitter()) {}
 
     static registerSubscriber(subscriber: any, eventBus: IEventBus) {
         mapSubscribers(subscriber, eventBus);

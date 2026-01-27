@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { IConfig, IExcelerateConfig } from '@domain/config/interfaces/excelerateConfig';
 
-export class ExcelarateConfig implements IExcelerateConfig {
+export class ExcelarateConfigAdapter implements IExcelerateConfig {
     private readonly configPath: string;
 
     constructor(workingDirectory: string) {
@@ -28,7 +28,9 @@ export class ExcelarateConfig implements IExcelerateConfig {
         const defaulConfig = this.getDefaultConfig();
 
         try {
-            const userConfig = await import(this.configPath);
+            const module = await import(this.configPath);
+
+            const userConfig = module.default || module;
 
             return { ...defaulConfig, ...userConfig };
         } catch (error) {
@@ -42,7 +44,7 @@ export class ExcelarateConfig implements IExcelerateConfig {
         return {
             watcher: {
                 include: ['app/**/*.js', 'packages/local/**/*.js'],
-                exclude: ['**/node_modules/**', 'build/**', 'packages/local/**/build/**'],
+                exclude: ['**/node_modules/**', 'build/**', 'packages/local/**/build/**']
             },
             server: { 
                 port: 3000 

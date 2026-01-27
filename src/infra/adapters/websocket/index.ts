@@ -2,7 +2,7 @@ import { Server } from "node:http";
 import { WebSocketServer } from "ws";
 import { ISocketServer } from "@domain/communication/interfaces/socketServer";
 
-export class WSServer implements ISocketServer {
+export class WSSocketServerAdapter implements ISocketServer {
     private wss: WebSocketServer | null = null;
 
     initialize(server: Server) {

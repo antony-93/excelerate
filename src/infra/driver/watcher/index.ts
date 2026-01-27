@@ -5,7 +5,7 @@ import { EVENTS } from '@domain/events/constants/events';
 import { IWatcher } from '@domain/watcher/interfaces/watcher';
 import { TWatcherConfig } from '@domain/config/interfaces/excelerateConfig';
 
-export class Watcher implements IWatcher {
+export class ParcelWatcherDriver implements IWatcher {
     private isIncluded!: (path: string) => boolean;
     private subscription: AsyncSubscription | null = null;
 
@@ -20,7 +20,7 @@ export class Watcher implements IWatcher {
     }
 
     config(config: TWatcherConfig) {
-        this.isIncluded = pm(config.include, {
+        this.isIncluded = pm([...config.include, ...config.live], {
             ignore: config.exclude
         });
     }

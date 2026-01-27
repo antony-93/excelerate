@@ -6,7 +6,7 @@ export class ReloadController {
     constructor(private readonly socketServer: ISocketServer) {}
 
     @Subscriber(EVENTS.FILE_CHANGED)
-    async onFileChange() {
-        console.log('ARQUIVO MODIFICADO');
+    async onFileChange(path: string) {
+        console.log('ARQUIVO MODIFICADO', path);
     }
 }

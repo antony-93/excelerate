@@ -4,27 +4,22 @@ import { IEventBus } from '@domain/events/interfaces/eventBus';
 import { EVENTS } from '@domain/events/constants/events';
 import { IWatcher } from '@domain/watcher/interfaces/watcher';
 import { TWatcherConfig } from '@domain/config/interfaces/config';
+import { IMatcher } from '@domain/matcher/interfaces/matcher';
 
 export class ParcelWatcher implements IWatcher {
-    private isIncluded!: (path: string) => boolean;
     private subscription: AsyncSubscription | null = null;
 
-    constructor(private readonly eventBus: IEventBus) { }
+    constructor(
+        private readonly eventBus: IEventBus,
+        private readonly matcher: IMatcher,
+        private readonly watcherConfig: TWatcherConfig
+    ) { }
 
     async start(workingDir: string) {
         this.subscription = await subscribe(workingDir, (err, events) => {
             if (err) return;
 
             this.onFileEvents(workingDir, events);
-        });
-    }
-
-    config(config: TWatcherConfig) {
-        const configInclude = config.include || [];
-        const configLive = config.live || [];
-
-        this.isIncluded = pm([...configInclude, ...configLive], {
-            ignore: config.exclude
         });
     }
 
@@ -49,5 +44,11 @@ export class ParcelWatcher implements IWatcher {
 
             if (isIncluded) this.eventBus.emit(EVENTS.FILE_CHANGED, event.path);
         });
+    }
+
+    private isIncluded(path: string) {
+        const { exclude, include } = this.watcherConfig;
+
+        return this.matcher.isMatch(path, include, exclude);
     }
 }

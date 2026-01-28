@@ -3,9 +3,9 @@ import { AsyncSubscription, subscribe, Event } from '@parcel/watcher';
 import { IEventBus } from '@domain/events/interfaces/eventBus';
 import { EVENTS } from '@domain/events/constants/events';
 import { IWatcher } from '@domain/watcher/interfaces/watcher';
-import { TWatcherConfig } from '@domain/config/interfaces/excelerateConfig';
+import { TWatcherConfig } from '@domain/config/interfaces/config';
 
-export class ParcelWatcherDriver implements IWatcher {
+export class ParcelWatcher implements IWatcher {
     private isIncluded!: (path: string) => boolean;
     private subscription: AsyncSubscription | null = null;
 
@@ -20,7 +20,10 @@ export class ParcelWatcherDriver implements IWatcher {
     }
 
     config(config: TWatcherConfig) {
-        this.isIncluded = pm([...config.include, ...config.live], {
+        const configInclude = config.include || [];
+        const configLive = config.live || [];
+
+        this.isIncluded = pm([...configInclude, ...configLive], {
             ignore: config.exclude
         });
     }

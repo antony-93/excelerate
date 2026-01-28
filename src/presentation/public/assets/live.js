@@ -1,8 +1,3 @@
-const reloadTypes = {
-    hot: 'hot',
-    live: 'live'
-}
-
 class ExcelerateClient {
     #webSocket
     #liveReloadHandler
@@ -19,11 +14,12 @@ class ExcelerateClient {
     #initWebSocket() {
         this.#webSocket.connect();
 
-        this.#webSocket.onMessage(({ type, ...props }) => {
-            this.#liveReloadHandler.handle(...props);
+        this.#webSocket.onMessage(() => {
+            this.#liveReloadHandler.handle();
         });
     }
 }
+
 class ExcelerateWebSocket {
     #socketUrl
     #webSocket

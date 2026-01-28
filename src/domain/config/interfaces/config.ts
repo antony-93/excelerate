@@ -12,7 +12,3 @@ export interface IConfig {
     watcher: TWatcherConfig;
     server: TServerConfig
 }
-
-export interface IExcelerateConfig {
-    getConfig(): Promise<IConfig>;
-}

@@ -2,6 +2,11 @@
 import { parseArgs } from 'node:util';
 import { ExcelerateApp } from './presentation';
 import { TCommandArgs } from '@domain/config/interfaces/commandArgs';
+import { FastifyHttpServer } from '@infra/http';
+import { WSSocketServer } from '@infra/websocket';
+import { ParcelWatcher } from '@infra/drivers/watcher';
+import { NodeEventEmmiter } from '@infra/events';
+import { ConfigRepository } from '@infra/repositories/configRepository';
 
 const options = {
     port: { type: 'string', short: 'p' },
@@ -15,7 +20,18 @@ const commandArgs: TCommandArgs = {
     port: values.port ? Number(values.port) : undefined
 }
 
-const app = new ExcelerateApp(commandArgs);
+const eventBus = new NodeEventEmmiter();
+const workingDir = process.cwd();
+
+const app = new ExcelerateApp(
+    commandArgs,
+    new FastifyHttpServer(),
+    new WSSocketServer(),
+    eventBus,
+    new ConfigRepository(workingDir),
+    new ParcelWatcher(eventBus),
+    workingDir
+);
 
 async function bootstrap() {
     try {

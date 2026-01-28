@@ -1,44 +1,31 @@
 import { IHttpServer } from '@domain/communication/interfaces/httpServer';
 import { ISocketServer } from '@domain/communication/interfaces/socketServer';
 import { TCommandArgs } from '@domain/config/interfaces/commandArgs';
-import { FastifyHttpServerAdapter } from '@infra/adapters/http';
-import { WSSocketServerAdapter } from '@infra/adapters/websocket';
 import { IEventBus } from '@domain/events/interfaces/eventBus';
-import { NodeEventEmmiterAdapter } from '@infra/adapters/events';
-import { ExcelarateConfigAdapter } from '@infra/adapters/config';
-import { IExcelerateConfig, TServerConfig, TWatcherConfig } from '@domain/config/interfaces/excelerateConfig';
+import { TServerConfig, TWatcherConfig } from '@domain/config/interfaces/config';
 import { IWatcher } from '@domain/watcher/interfaces/watcher';
-import { ParcelWatcherDriver } from '@infra/driver/watcher';
 import { ReloadController } from './controllers/reloadController';
-import { HotReloadInjection, LiveReloadInjection } from '@domain/reload/injections';
-import { IInjection } from '@domain/reload/interfaces/injection';
 import { EXCELERATE_INTERNAL_PREFIX } from '@domain/communication/const/server';
 import path from 'node:path';
+import { InjectionScriptFactory } from '@infra/factories/InjectionScriptFactory';
+import { IConfigRepository } from '@domain/config/repository/configRepository';
+import { NodeEventEmmiter } from '@infra/events';
 
 export class ExcelerateApp {
-    private readonly httpServer: IHttpServer;
-    private readonly socketServer: ISocketServer;
-    private readonly eventBus: IEventBus;
-    private readonly excelerateConfig: IExcelerateConfig;
-    private readonly watcher: IWatcher;
-    private readonly workingDir: string;
-
-    constructor(private readonly commandArgs: TCommandArgs) {
-        const eventBus = new NodeEventEmmiterAdapter();
-        const workingDir = process.cwd();
-
-        this.workingDir = workingDir;
-        this.eventBus = eventBus;
-        this.watcher = new ParcelWatcherDriver(eventBus);
-        this.excelerateConfig = new ExcelarateConfigAdapter(workingDir);
-        this.httpServer = new FastifyHttpServerAdapter();
-        this.socketServer = new WSSocketServerAdapter();
-    }
+    constructor(
+        private readonly commandArgs: TCommandArgs,
+        private readonly httpServer: IHttpServer,
+        private readonly socketServer: ISocketServer,
+        private readonly eventBus: IEventBus,
+        private readonly configRepository: IConfigRepository,
+        private readonly watcher: IWatcher,
+        private readonly workingDir: string
+    ) { }
 
     async initialize() {
         this.registerControllers();
 
-        const { server, watcher } = await this.excelerateConfig.getConfig();
+        const { server, watcher } = await this.configRepository.getConfig();
 
         await Promise.all([
             this.startWatcher(watcher),
@@ -59,7 +46,7 @@ export class ExcelerateApp {
 
     private registerControllers() {
         const reloadController = new ReloadController(this.socketServer);
-        NodeEventEmmiterAdapter.registerSubscriber(reloadController, this.eventBus);
+        NodeEventEmmiter.registerSubscriber(reloadController, this.eventBus);
     }
 
     private startWatcher(watcherConfig: TWatcherConfig) {
@@ -68,9 +55,9 @@ export class ExcelerateApp {
     }
 
     private async startHttpServer(serverConfig: TServerConfig) {
-        const injection: IInjection = this.commandArgs.live
-            ? new LiveReloadInjection()
-            : new HotReloadInjection();
+        const live = Boolean(this.commandArgs.live);
+
+        const injection = InjectionScriptFactory.create(live);
 
         const root = path.join(__dirname, 'assets');
 

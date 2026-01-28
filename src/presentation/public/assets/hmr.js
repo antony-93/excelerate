@@ -30,6 +30,7 @@ class ExcelerateClient {
         });
     }
 }
+
 class ExcelerateWebSocket {
     #socketUrl
     #webSocket

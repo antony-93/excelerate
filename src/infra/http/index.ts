@@ -3,7 +3,7 @@ import { IHttpServer, THttpServerConfig } from "@domain/communication/interfaces
 import { apiMiddlewares } from "./middlewares";
 import { apiPlugins } from "./plugins";
 
-export class FastifyHttpServerAdapter implements IHttpServer {
+export class FastifyHttpServer implements IHttpServer {
     private readonly app: FastifyInstance;
 
     constructor() {

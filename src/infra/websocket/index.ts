@@ -1,15 +1,15 @@
 import { Server } from "node:http";
 import { WebSocketServer } from "ws";
-import { ISocketServer } from "@domain/communication/interfaces/socketServer";
+import { INotifier } from "@domain/communication/interfaces/notifier";
 
-export class WSSocketServer implements ISocketServer {
+export class WebSocketNotifier implements INotifier {
     private wss: WebSocketServer | null = null;
 
     initialize(server: Server) {
         this.wss = new WebSocketServer({ server });
     }
 
-    broadcast(message: Record<string, any>): void {
+    notify(message: Record<string, any>): void {
         if (!this.wss) return;
 
         const data = JSON.stringify(message);

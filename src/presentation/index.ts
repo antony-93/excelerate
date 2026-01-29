@@ -1,5 +1,5 @@
 import { IHttpServer } from '@domain/communication/interfaces/httpServer';
-import { ISocketServer } from '@domain/communication/interfaces/socketServer';
+import { INotifier } from '@domain/communication/interfaces/notifier';
 import { TCommandArgs } from '@domain/config/interfaces/commandArgs';
 import { IEventBus } from '@domain/events/interfaces/eventBus';
 import { TServerConfig, TWatcherConfig } from '@domain/config/interfaces/config';
@@ -15,7 +15,7 @@ export class ExcelerateApp {
     constructor(
         private readonly commandArgs: TCommandArgs,
         private readonly httpServer: IHttpServer,
-        private readonly socketServer: ISocketServer,
+        private readonly notifier: INotifier,
         private readonly eventBus: IEventBus,
         private readonly configRepository: IConfigRepository,
         private readonly watcher: IWatcher,
@@ -32,11 +32,11 @@ export class ExcelerateApp {
             this.startHttpServer(server)
         ]);
 
-        this.startSocketServer();
+        this.startNotifier();
     }
 
     close() {
-        this.socketServer.close();
+        this.notifier.close();
 
         return Promise.all([
             this.httpServer.close(),
@@ -45,7 +45,7 @@ export class ExcelerateApp {
     }
 
     private registerControllers() {
-        const reloadController = new ReloadController(this.socketServer);
+        const reloadController = new ReloadController(this.notifier);
         NodeEventEmmiter.registerSubscriber(reloadController, this.eventBus);
     }
 
@@ -72,9 +72,9 @@ export class ExcelerateApp {
         await this.httpServer.start('0.0.0.0', port);
     }
 
-    private startSocketServer() {
+    private startNotifier() {
         const server = this.httpServer.getServer();
 
-        this.socketServer.initialize(server);
+        this.notifier.initialize(server);
     }
 }

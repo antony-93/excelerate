@@ -42,7 +42,7 @@ export class App {
     }
 
     private registerControllers() {
-        const reloadController = makeReloadController(this.workingDir);
+        const reloadController = makeReloadController(this.workingDir, this.commandArgs);
         NodeEventEmmiter.registerSubscriber(reloadController, this.eventBus);
     }
 

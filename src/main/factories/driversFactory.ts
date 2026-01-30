@@ -21,8 +21,8 @@ export const makeFastifyHttpServer = (): IHttpServer => {
     return new FastifyHttpServer();
 };
 
-export const makePicomatchMatcher = (workingDir: string): IMatcher => {
-    return new PicomatchMatcher(workingDir);
+export const makePicomatchMatcher = (): IMatcher => {
+    return new PicomatchMatcher();
 };
 
 export const makeNodeEventEmmiter = (): IEventBus => {
@@ -32,7 +32,8 @@ export const makeNodeEventEmmiter = (): IEventBus => {
 export const makeParcelWatcher = (
     eventBus: IEventBus, 
     matcher: IMatcher, 
-    watcherConfig: TWatcherConfig
+    watcherConfig: TWatcherConfig,
+    workingDir: string
 ): IWatcher => {
-    return new ParcelWatcher(eventBus, matcher, watcherConfig);
+    return new ParcelWatcher(eventBus, matcher, watcherConfig, workingDir);
 };

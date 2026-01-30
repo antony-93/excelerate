@@ -11,14 +11,15 @@ export class ParcelWatcher implements IWatcher {
     constructor(
         private readonly eventBus: IEventBus,
         private readonly matcher: IMatcher,
-        private readonly watcherConfig: TWatcherConfig
+        private readonly watcherConfig: TWatcherConfig,
+        private readonly workingDir: string
     ) { }
 
-    async start(workingDir: string) {
-        this.subscription = await subscribe(workingDir, (err, events) => {
+    async start() {
+        this.subscription = await subscribe(this.workingDir, (err, events) => {
             if (err) return;
 
-            this.onFileEvents(workingDir, events);
+            this.onFileEvents(events);
         });
     }
 
@@ -30,13 +31,26 @@ export class ParcelWatcher implements IWatcher {
         this.subscription = null;
     }
 
-    private onFileEvents(workingDir: string, events: Event[]) {
+    private onFileEvents(events: Event[]) {
         const filteredEvents = events.filter(e => e.type !== 'delete');
 
         filteredEvents.forEach(({ path }) => {
-            const isIncluded = this.isIncluded(path);
+            const relativePath = this.getRelativePath(path);
+            const isIncluded = this.isIncluded(relativePath);
+            
             if (isIncluded) this.eventBus.emit(EVENTS.FILE_CHANGED, path);
         });
+    }
+
+    private getRelativePath(path: string) {
+        const normalizedPath = path.replace(/\\/g, '/');
+        const normalizedBase = this.workingDir.replace(/\\/g, '/');
+
+        let relativePath = normalizedPath.replace(normalizedBase, '');
+
+        if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
+
+        return relativePath
     }
 
     private isIncluded(path: string) {

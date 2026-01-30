@@ -26,7 +26,7 @@ class ExcelerateClient {
                 ? this.#hotReloadHandler
                 : this.#liveReloadHandler;
 
-            reload.handle(...props);
+            reload.handle({ ...props });
         });
     }
 }

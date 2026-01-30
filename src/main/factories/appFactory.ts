@@ -9,14 +9,14 @@ export const makeApp = async (commandArgs: TCommandArgs, workingDir: string): Pr
     const eventBus = makeNodeEventEmmiter();
     const configRepository = makeConfigRepository(workingDir);
     
-    const matcher = makePicomatchMatcher(workingDir);
+    const matcher = makePicomatchMatcher();
 
     const { 
         watcher: watcherConfig, 
         server: serverConfig 
     } = await configRepository.getConfig();
 
-    const watcher = makeParcelWatcher(eventBus, matcher, watcherConfig);
+    const watcher = makeParcelWatcher(eventBus, matcher, watcherConfig, workingDir);
 
     return new App(
         commandArgs,

@@ -8,7 +8,7 @@ import { IReloadUseCase } from "@application/reload/reloadUseCase";
 export const makeReloadUseCase = (workingDir: string, commandArgs: TCommandArgs): IReloadUseCase => {
     const notifier = makeWebSocketNotifier();
     const configRepository = makeConfigRepository(workingDir);
-    const matcher = makePicomatchMatcher(workingDir);
+    const matcher = makePicomatchMatcher();
 
     return commandArgs.live
         ? new LiveOnlyReloadUseCase(notifier, configRepository, matcher)

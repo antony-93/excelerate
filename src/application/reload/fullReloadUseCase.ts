@@ -19,6 +19,6 @@ export class FullReloadUseCase implements IReloadUseCase {
 
         const isHot = this.matcher.isMatch(path, watcher.include, watcher.exclude);
         
-        if (isHot) this.notifier.notify({ type: 'hot' });
+        if (isHot) this.notifier.notify({ type: 'hot', path });
     }
 }

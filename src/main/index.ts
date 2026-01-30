@@ -1,23 +1,22 @@
+import path from 'node:path';
 import { IHttpServer } from '@domain/communication/interfaces/httpServer';
 import { INotifier } from '@domain/communication/interfaces/notifier';
 import { TCommandArgs } from '@domain/config/interfaces/commandArgs';
 import { IEventBus } from '@domain/events/interfaces/eventBus';
-import { TServerConfig, TWatcherConfig } from '@domain/config/interfaces/config';
+import { TServerConfig } from '@domain/config/interfaces/config';
 import { IWatcher } from '@domain/watcher/interfaces/watcher';
-import { ReloadController } from './controllers/reloadController';
 import { EXCELERATE_INTERNAL_PREFIX } from '@domain/communication/const/server';
-import path from 'node:path';
 import { InjectionScriptFactory } from '@infra/factories/InjectionScriptFactory';
-import { IConfigRepository } from '@domain/config/repository/configRepository';
 import { NodeEventEmmiter } from '@infra/events';
+import { makeReloadController } from './factories/controllerFactory';
 
-export class ExcelerateApp {
+export class App {
     constructor(
         private readonly commandArgs: TCommandArgs,
         private readonly httpServer: IHttpServer,
         private readonly notifier: INotifier,
         private readonly eventBus: IEventBus,
-        private readonly configRepository: IConfigRepository,
+        private readonly serverConfig: TServerConfig,
         private readonly watcher: IWatcher,
         private readonly workingDir: string
     ) { }
@@ -25,11 +24,9 @@ export class ExcelerateApp {
     async initialize() {
         this.registerControllers();
 
-        const { server, watcher } = await this.configRepository.getConfig();
-
         await Promise.all([
-            this.startWatcher(watcher),
-            this.startHttpServer(server)
+            this.startWatcher(),
+            this.startHttpServer()
         ]);
 
         this.startNotifier();
@@ -45,16 +42,15 @@ export class ExcelerateApp {
     }
 
     private registerControllers() {
-        const reloadController = new ReloadController(this.notifier);
+        const reloadController = makeReloadController(this.workingDir);
         NodeEventEmmiter.registerSubscriber(reloadController, this.eventBus);
     }
 
-    private startWatcher(watcherConfig: TWatcherConfig) {
-        this.watcher.config(watcherConfig);
+    private startWatcher() {
         return this.watcher.start(this.workingDir);
     }
 
-    private async startHttpServer(serverConfig: TServerConfig) {
+    private async startHttpServer() {
         const live = Boolean(this.commandArgs.live);
 
         const injection = InjectionScriptFactory.create(live);
@@ -67,7 +63,7 @@ export class ExcelerateApp {
             internalPrefix: EXCELERATE_INTERNAL_PREFIX
         });
 
-        const port = this.commandArgs.port || serverConfig.port || 3000;
+        const port = this.commandArgs.port || this.serverConfig.port || 3000;
 
         await this.httpServer.start('0.0.0.0', port);
     }

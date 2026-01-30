@@ -1,12 +1,8 @@
 #!/usr/bin/env node
 import { parseArgs } from 'node:util';
-import { ExcelerateApp } from './presentation';
+import { App } from './main';
 import { TCommandArgs } from '@domain/config/interfaces/commandArgs';
-import { FastifyHttpServer } from '@infra/http';
-import { WSSocketServer } from '@infra/websocket';
-import { ParcelWatcher } from '@infra/drivers/watcher';
-import { NodeEventEmmiter } from '@infra/events';
-import { ConfigRepository } from '@infra/repositories/configRepository';
+import { makeApp } from './main/factories/appFactory';
 
 const options = {
     port: { type: 'string', short: 'p' },
@@ -20,22 +16,16 @@ const commandArgs: TCommandArgs = {
     port: values.port ? Number(values.port) : undefined
 }
 
-const eventBus = new NodeEventEmmiter();
 const workingDir = process.cwd();
 
-const app = new ExcelerateApp(
-    commandArgs,
-    new FastifyHttpServer(),
-    new WSSocketServer(),
-    eventBus,
-    new ConfigRepository(workingDir),
-    new ParcelWatcher(eventBus),
-    workingDir
-);
+let app: App | null = null;
 
 async function bootstrap() {
     try {
+        app = await makeApp(commandArgs, workingDir);
+
         await app.initialize();
+        
         console.log('🚀 EXCELERATE ONLINE')
     } catch(error) {
         console.error('❌ Erro durante a inicialização:', error);
@@ -45,7 +35,7 @@ async function bootstrap() {
 
 async function shutdown(code: number = 0) {
     try {
-        await app.close();
+        await app?.close();
 
         console.log('👋 Até logo!');
         

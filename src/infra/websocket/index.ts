@@ -14,8 +14,8 @@ export class WebSocketNotifier implements INotifier {
 
         const data = JSON.stringify(message);
 
-        this.wss.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) client.send(data);
+        this.wss.clients.forEach(c => {
+            if (c.readyState === WebSocket.OPEN) c.send(data);
         });
     }
 

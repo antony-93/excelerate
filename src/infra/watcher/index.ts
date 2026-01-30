@@ -1,4 +1,3 @@
-import pm from 'picomatch';
 import { AsyncSubscription, subscribe, Event } from '@parcel/watcher';
 import { IEventBus } from '@domain/events/interfaces/eventBus';
 import { EVENTS } from '@domain/events/constants/events';
@@ -32,23 +31,22 @@ export class ParcelWatcher implements IWatcher {
     }
 
     private onFileEvents(workingDir: string, events: Event[]) {
-        events.filter(e => e.type !== 'delete').forEach(event => {
-            const normalizedFilePath = event.path.replace(/\\/g, '/');
-            const normalizedWorkingDir = workingDir.replace(/\\/g, '/');
+        const filteredEvents = events.filter(e => e.type !== 'delete');
 
-            let relativePath = normalizedFilePath.replace(normalizedWorkingDir, '');
-
-            if (relativePath.startsWith('/')) relativePath = relativePath.substring(1);
-
-            const isIncluded = this.isIncluded(relativePath);
-
-            if (isIncluded) this.eventBus.emit(EVENTS.FILE_CHANGED, event.path);
+        filteredEvents.forEach(({ path }) => {
+            const isIncluded = this.isIncluded(path);
+            if (isIncluded) this.eventBus.emit(EVENTS.FILE_CHANGED, path);
         });
     }
 
     private isIncluded(path: string) {
-        const { exclude, include } = this.watcherConfig;
+        const include = this.watcherConfig.include || [];
+        const live = this.watcherConfig.live || [];
 
-        return this.matcher.isMatch(path, include, exclude);
+        return this.matcher.isMatch(
+            path,
+            [...include, ...live],
+            this.watcherConfig.exclude
+        );
     }
 }

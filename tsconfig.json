@@ -19,19 +19,19 @@
         "baseUrl": ".",
         "paths": {
             "@domain/*": [
-                "src/domain/*"
+                "src/cli/domain/*"
             ],
             "@application/*": [
-                "src/application/*"
+                "src/cli/application/*"
             ],
             "@infra/*": [
-                "src/infra/*"
+                "src/cli/infra/*"
             ],
             "@presentation/*": [
-                "src/presentation/*"
+                "src/cli/presentation/*"
             ],
             "@shared/*": [
-                "src/shared/*"
+                "src/cli/shared/*"
             ]
         },
     },

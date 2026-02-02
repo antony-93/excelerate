@@ -6,6 +6,12 @@ export default tseslint.config(
     js.configs.recommended,
     ...tseslint.configs.recommended,
     {
+        files: ["src/**/*.ts"],
+        languageOptions: {
+            parserOptions: {
+                project: true,
+            },
+        },
         rules: {
             "@typescript-eslint/no-explicit-any": "off",
             "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
@@ -13,17 +19,23 @@ export default tseslint.config(
         }
     },
     {
-        files: ["src/presentation/public/assets/**/*.js"],
+        files: ["src/cli/**/*.ts"],
         languageOptions: {
-            ecmaVersion: "latest",
-            sourceType: "script",
             globals: {
-                ...globals.browser
+                ...globals.node,
+            },
+        },
+    },
+    {
+        files: ["src/hmr/**/*.ts"],
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                Ext: "readonly",
             },
         },
         rules: {
-            "no-console": "off",
-            "no-unused-vars": "warn",
-        },
-    },
+            "no-restricted-globals": ["error", "process"],
+        }
+    }
 );

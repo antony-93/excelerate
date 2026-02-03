@@ -1,6 +1,6 @@
-# excelerate
+# Excelerate
 
-excelerate is a package designed to make developing with Ext JS Classic easier. With a single command, it allows you to run your Ext JS application with hot reload and live reload support, significantly improving your productivity.
+Excelerate is a package designed to make developing with Ext JS Classic easier. With a single command, it allows you to run your Ext JS application with hot reload and live reload support, significantly improving your productivity.
 
 ### Key Features
 
@@ -59,7 +59,7 @@ To run the application with hot reload and on port 3000, you would use the follo
 excelerate --port 3000
 ```
 
-If you want only live, add --live to the command
+If you want only live reload, add --live to the command
 
 ```bash
 excelerate --live --port 3000

@@ -55,7 +55,7 @@ export class ParcelWatcher implements IWatcher {
             if (isIncluded) {
                 this.eventBus.emit(EVENTS.FILE_CHANGED, relativePath);
             }
-        }, 100);
+        }, 150);
     
         this.debounceTimers.set(path, timer);
     }

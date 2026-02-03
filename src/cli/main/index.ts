@@ -63,7 +63,10 @@ export class App {
 
         const port = this.commandArgs.port || this.serverConfig.port || 3000;
 
-        await this.httpServer.start('0.0.0.0', port);
+        const url = await this.httpServer.start('0.0.0.0', port);
+        const urlWithLocalhost = url.replace(/\/\/[^:]+/, '//localhost');
+        
+        console.log(`✨ [Excelerate] Hospedando servidor em: ${urlWithLocalhost} | ${url}`);
     }
 
     private startNotifier() {

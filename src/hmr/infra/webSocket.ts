@@ -1,7 +1,8 @@
-import { IWebSocket, TReloadMessage } from "../interfaces/webSocket";
+import { IWebSocket, TWSReloadMessage } from "../interfaces/webSocket";
 
 export class ExcelerateWebSocket implements IWebSocket {
     private webSocket: WebSocket | null = null;
+    private retryCounts: number = 0;
 
     constructor(private readonly socketUrl: string) {}
 
@@ -10,12 +11,12 @@ export class ExcelerateWebSocket implements IWebSocket {
         this.config();
     }
 
-    onMessage(cb: (message: TReloadMessage) => void) {
+    onMessage(cb: (message: TWSReloadMessage) => void) {
         this.webSocket!.onmessage = (event) => {
             try {
                 const message = JSON.parse(event.data);
                 
-                const reloadMessage: TReloadMessage = {
+                const reloadMessage: TWSReloadMessage = {
                     type: message.type ?? 'live',
                     path: message.path ?? '',
                 }
@@ -28,9 +29,19 @@ export class ExcelerateWebSocket implements IWebSocket {
     }
 
     private config() {
+        this.webSocket!.onopen = () => {
+            this.retryCounts = 0;
+        }
+
         this.webSocket!.onclose = () => {
+            if (this.retryCounts === 3) return;
+
             console.warn('⚠️ [Excelerate] Conexão perdida. Tentando reconectar em 3s...');
-            setTimeout(() => this.connect(), 3000);
+            
+            setTimeout(() => {
+                this.connect()
+                this.retryCounts++
+            }, 3000);
         };
 
         this.webSocket!.onerror = () => {

@@ -28,7 +28,7 @@ export class HotReload implements IReload {
         ].filter(Boolean);
 
         if (!queryActions.length) {
-            return console.info('Não foi possivel reconciliar a classe ' + className)
+            return console.info(`⚠️ [Excelerate] Não foi possivel reconciliar a classe ${className}`)
         }
 
         const [queryAction] = queryActions;
@@ -54,7 +54,7 @@ export class HotReload implements IReload {
         const $parent = $cmp.up();
 
         if (!$parent) {
-            console.log("♻️ Root component detectado. Tentando refresh via Viewport.");
+            console.log("♻️ [Excelerate] Root component detectado. Tentando refresh via Viewport.");
             return location.reload();
         }
 
@@ -66,9 +66,9 @@ export class HotReload implements IReload {
             $parent.suspendLayouts();
             $parent.remove($cmp, true);
             $parent.insert(cmpIndex, cmpConfig);
+            console.log(`✨ [Excelerate] UI Reconstruída: ${$cmp.id}`);
         } finally {
             $parent.resumeLayouts(true);
-            console.log(`✨ [Excelerate] UI Reconstruída: ${$cmp.id}`);
         }
     }
 

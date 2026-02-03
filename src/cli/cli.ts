@@ -25,10 +25,8 @@ async function bootstrap() {
         app = await makeApp(commandArgs, workingDir);
 
         await app.initialize();
-        
-        console.log('🚀 EXCELERATE ONLINE')
     } catch(error) {
-        console.error('❌ Erro durante a inicialização:', error);
+        console.error('❌ [Excelerate] Erro durante a inicialização:', error);
         shutdown(1);
     }
 }
@@ -37,11 +35,11 @@ async function shutdown(code: number = 0) {
     try {
         await app?.close();
 
-        console.log('👋 Até logo!');
+        console.log('👋 [Excelerate] Até logo!');
         
         process.exit(code);
     } catch (err) {
-        console.error('❌ Erro durante o desligamento:', err);
+        console.error('❌ [Excelerate] Erro durante o desligamento:', err);
         process.exit(1);
     }
 }
@@ -49,7 +47,7 @@ async function shutdown(code: number = 0) {
 process.on('SIGINT', () => shutdown());
 process.on('SIGTERM', () => shutdown());
 process.on('unhandledRejection', (reason) => {
-    console.error('❌ Erro assíncrono não tratado:', reason);
+    console.error('❌ [Excelerate] Erro assíncrono não tratado:', reason);
     shutdown(1);
 });
 

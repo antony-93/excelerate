@@ -15,14 +15,16 @@ export class FullReloadUseCase implements IReloadUseCase {
 
         const isLive = this.matcher.isMatch(path, watcher.live, watcher.exclude);
         
-        if (isLive) return this.notifier.notify({ type: 'live' });
-
-        console.log('path', path);
+        if (isLive) {
+            this.notifier.notify({ type: 'live', path });
+            return console.log('🔄 [LIVE] ' + path);
+        }
         
         const isHot = this.matcher.isMatch(path, watcher.include, watcher.exclude);
         
-        console.log('isHot', isHot);
-        
-        if (isHot) this.notifier.notify({ type: 'hot', path });
+        if (isHot) {
+            this.notifier.notify({ type: 'hot', path });
+            console.log('🔥 [HOT] ' + path);
+        }
     }
 }

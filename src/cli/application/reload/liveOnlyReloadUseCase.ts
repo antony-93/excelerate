@@ -15,6 +15,9 @@ export class LiveOnlyReloadUseCase implements IReloadUseCase {
 
         const isIncluded = this.matcher.isMatch(path, watcher.live, watcher.exclude);
 
-        if (isIncluded) this.notifier.notify({ type: 'live' });
+        if (isIncluded) {
+            this.notifier.notify({ type: 'live' });
+            console.log('🔄 [LIVE] ' + path);
+        }
     }
 }

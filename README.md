@@ -64,3 +64,26 @@ If you want only live reload, add --live to the command
 ```bash
 excelerate --live --port 3000
 ```
+## Configurations
+
+You can customize **Excelerate** by creating an `excelerate.config.js` file in the root of your project. This allows you to define persistent settings for your workflow without typing arguments every time.
+
+### Example `excelerate.config.js`
+
+```javascript
+module.exports = {
+    watcher: {
+        // Files that trigger Hot Reloading (instant update)
+        include: ['app/**/*.js', 'packages/local/**/*.js'],
+        
+        // Files and directories to be ignored by the watcher
+        exclude: ['**/node_modules/**', 'build/**', 'packages/local/**/build/**'],
+        
+        // Files that trigger a full browser reload (Live Reload)
+        live: ['index.html']
+    },
+    server: { 
+        // Default port for the development server
+        port: 3000 
+    }
+};

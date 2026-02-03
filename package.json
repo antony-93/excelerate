@@ -1,21 +1,26 @@
 {
-  "name": "ext-celerate",
-  "description": "ext-celerate is a package designed to make developing with Ext JS easier with Hot Reload and Live Reload support!",
-  "version": "1.0.0",
-  "main": "dist/index.js",
+  "name": "excelerate",
+  "version": "0.1.0",
+  "description": "excelerate is a package designed to make developing with Ext JS easier with Hot Reload and Live Reload support!",
+  "main": "./dist/cli.mjs",
   "bin": {
-    "celerate": "./dist/index.js"
+    "excelerate": "./dist/cli.mjs"
   },
   "scripts": {
-    "build": "tsc"
+    "dev": "tsx watch src/cli.ts",
+    "build": "tsup",
+    "start": "node dist/cli.mjs",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "ext-celerate",
-    "celerate",
+    "excelerate",
     "reload",
     "ext hot reload",
     "ext-hot-reload",
-    "ext reload"
+    "ext reload",
+    "extjs"
   ],
   "author": "Antony Luiz Cechinel",
   "license": "MIT",
@@ -26,19 +31,23 @@
     "package.json"
   ],
   "dependencies": {
-    "@types/chalk": "^2.2.0",
-    "boxen": "^4.2.0",
-    "chalk": "^4.1.2",
-    "chokidar": "^4.0.0",
-    "express": "^4.21.0",
-    "portfinder": "^1.0.32",
-    "ws": "^8.18.0",
-    "yargs": "^17.7.2"
+    "@fastify/static": "^9.0.0",
+    "@parcel/watcher": "^2.5.4",
+    "fastify": "^5.7.1",
+    "picomatch": "^4.0.3",
+    "reflect-metadata": "^0.2.2",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/ws": "^8.5.12",
-    "@types/yargs": "^17.0.33",
-    "typescript": "^5.6.2"
+    "@eslint/js": "^9.39.2",
+    "@swc/core": "^1.15.10",
+    "@types/node": "^25.0.9",
+    "@types/picomatch": "^4.0.2",
+    "@types/ws": "^8.18.1",
+    "eslint": "^9.39.2",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.1"
   }
 }

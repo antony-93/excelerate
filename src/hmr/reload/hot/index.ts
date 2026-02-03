@@ -13,7 +13,7 @@ export class HotReload implements IReload {
             await this.reloadClass(path, className);
             this.reconcileUI(className);
         } catch(error) {
-            console.log(error);
+            console.error(error);
         }
     }
 

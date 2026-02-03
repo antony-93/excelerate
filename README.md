@@ -37,7 +37,7 @@ This command starts the application, by default it uses hot reload!
   * **Example**:
 
     ```bash
-    excelerate --live
+    excelerate --port 3000
     ```
 
 * `--live`
@@ -87,3 +87,21 @@ module.exports = {
         port: 3000 
     }
 };
+```
+
+### Default Values
+
+If the `excelerate.config.js` file is not present, the CLI will automatically use the following default settings:
+
+```javascript
+{
+    watcher: {
+        include: ['app/**/*.js', 'packages/local/**/*.js'],
+        exclude: ['**/node_modules/**', 'build/**', 'packages/local/**/build/**'],
+        live: ['index.html']
+    },
+    server: { 
+        port: 3000 
+    }
+}
+```

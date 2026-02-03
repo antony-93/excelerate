@@ -1,7 +1,7 @@
 {
   "name": "excelerate",
-  "version": "1.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "excelerate is a package designed to make developing with Ext JS easier with Hot Reload and Live Reload support!",
   "main": "index.js",
   "bin": {
     "excelerate": "./dist/cli.mjs"
@@ -13,9 +13,23 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "ext-celerate",
+    "excelerate",
+    "reload",
+    "ext hot reload",
+    "ext-hot-reload",
+    "ext reload",
+    "extjs"
+  ],
+  "author": "Antony Luiz Cechinel",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "package.json"
+  ],
   "dependencies": {
     "@fastify/static": "^9.0.0",
     "@parcel/watcher": "^2.5.4",

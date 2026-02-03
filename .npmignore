@@ -1,0 +1,12 @@
+# Documentação e Configurações de Dev
+/src
+tsconfig.json
+tsup.config.ts
+eslint.config.mjs
+.gitignore
+
+# Logs e Cache
+npm-debug.log
+/node_modules
+.eslintcache
+package-lock.json

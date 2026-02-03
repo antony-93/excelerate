@@ -1,10 +1,13 @@
 {
-  "name": "excelerate",
+  "name": "@antony_93/excelerate",
   "version": "0.1.0",
   "description": "Excelerate is a package designed to make developing with Ext JS easier with Hot Reload and Live Reload support!",
   "main": "./dist/cli.mjs",
   "bin": {
-    "excelerate": "./dist/cli.mjs"
+    "excelerate": "dist/cli.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "tsx watch src/cli.ts",

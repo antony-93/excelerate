@@ -15,7 +15,7 @@ Excelerate is a package designed to make developing with Ext JS Classic easier. 
 To install excelerate, run the following command in your console
 
 ```bash
-npm i -g excelerate
+npm i -g @antony_93/excelerate
 ```
 
 ## Commands

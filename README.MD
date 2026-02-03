@@ -1,6 +1,6 @@
-# excelerate
+# Excelerate
 
-excelerate is a package designed to make developing with Ext JS Classic easier. With a single command, it allows you to run your Ext JS application with hot reload and live reload support, significantly improving your productivity.
+Excelerate is a package designed to make developing with Ext JS Classic easier. With a single command, it allows you to run your Ext JS application with hot reload and live reload support, significantly improving your productivity.
 
 ### Key Features
 

@@ -24,6 +24,7 @@ class ExcelerateClient {
             if (typeof Ext !== 'undefined' && Ext.ComponentQuery) {
                 this.setControllerOptionInQuery();
                 this.setViewModelOptionInQuery();
+                this.setDependentClassesOptionsInQuery();
                 clearInterval(timer);
             }
         }, 300);
@@ -39,7 +40,7 @@ class ExcelerateClient {
                 const controller = $cmp.getController ? $cmp.getController() : null;
 
                 if (controller?.$className === className) result.push($cmp);
-            })
+            });
 
             return result;
         };
@@ -53,6 +54,26 @@ class ExcelerateClient {
                 const vwm = $cmp.getViewModel ? $cmp.getViewModel() : null;
 
                 if (vwm?.$className === className) result.push($cmp);
+            })
+
+            return result;
+        };
+    }
+
+    private setDependentClassesOptionsInQuery() {
+        Ext.ComponentQuery.pseudos.dependentClasses = function(components: any[], className: string) {
+            const result: any[] = [];
+        
+            components.forEach($cmp => {
+                const controllerRequires: any[] = $cmp.getController()?.requires || [];
+                const vwmRequires: any[] = $cmp.getViewModel()?.requires || [];
+                const requires: any[] = $cmp.requires || [];
+
+                const required = requires.find(r => r.$className === className) 
+                    || controllerRequires.find(r => r.$className === className)
+                    || vwmRequires.find(r => r.$className === className);
+
+                if (required) result.push($cmp);
             })
 
             return result;
